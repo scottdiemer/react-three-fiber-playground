@@ -1,17 +1,47 @@
-import React from 'react';
+import React, { useRef, useState, Fragment} from 'react';
+import { Canvas, useFrame} from 'react-three-fiber'
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+
+function Box(props) {
+  const mesh = useRef()
+  const [hovered, setHover] = useState(false)
+  const [active, setAction] = useState(false)
+
+  useFrame(() => {
+    if(hovered && !active) {
+      mesh.current.rotation.z += 0.01
+      mesh.current.rotation.x += 0.01
+    }
+    if(hovered && active) {
+      mesh.current.rotation.y += 0.02
+      mesh.current.rotation.x += 0.06
+    }
+  })
+
+  return (
+    <mesh
+    {...props}
+    ref={mesh}
+    scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
+    onClick={e => setAction(!active)}
+    onPointerOver={e => setHover(true)}
+    onPointerOut={e => setHover(false)}>
+    <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
+    <meshStandardMaterial attach="material" color={hovered ? 'hotpink' : 'orange'} />
+    </mesh>
+  )
+}
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Fragment>
+  <h1>React-Three-Fiber</h1>
+    <Canvas>
+      <ambientLight />
+  <pointLight position={[10, 10, 10]} />
+  <Box position={[-1.2, 1, 1]} />
+  <Box position={[1.2, 0, 0]} />
+    </Canvas>
+  </Fragment>,
   document.getElementById('root')
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
