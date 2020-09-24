@@ -1,47 +1,6 @@
-import React, { useRef, useState, Fragment} from 'react';
-import { Canvas, useFrame} from 'react-three-fiber'
-import ReactDOM from 'react-dom';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import "./index.css";
 
-function Box(props) {
-  const mesh = useRef()
-  const [hovered, setHover] = useState(false)
-  const [active, setAction] = useState(false)
-
-  useFrame(() => {
-    if(hovered && !active) {
-      mesh.current.rotation.z += 0.01
-      mesh.current.rotation.x += 0.01
-    }
-    if(hovered && active) {
-      mesh.current.rotation.y += 0.02
-      mesh.current.rotation.x += 0.06
-    }
-  })
-
-  return (
-    <mesh
-    {...props}
-    ref={mesh}
-    scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
-    onClick={e => setAction(!active)}
-    onPointerOver={e => setHover(true)}
-    onPointerOut={e => setHover(false)}>
-    <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
-    <meshStandardMaterial attach="material" color={hovered ? 'hotpink' : 'orange'} />
-    </mesh>
-  )
-}
-
-ReactDOM.render(
-  <Fragment>
-  <h1>React-Three-Fiber</h1>
-    <Canvas>
-      <ambientLight />
-  <pointLight position={[10, 10, 10]} />
-  <Box position={[-1.2, 1, 1]} />
-  <Box position={[1.2, 0, 0]} />
-    </Canvas>
-  </Fragment>,
-  document.getElementById('root')
-);
+ReactDOM.render(<App />, document.getElementById("root"));
